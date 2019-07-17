@@ -1,5 +1,11 @@
 FROM python:3-alpine3.10
 
+COPY ./requirements.txt /requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+ENV DISCORD_BOT_KEY "key"
+
 COPY ./app /app
 
-RUN python /app/main.py
+ENTRYPOINT python3 /app/main.py
