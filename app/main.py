@@ -7,12 +7,15 @@ import os
 bot = commands.Bot(command_prefix=">", description="This is a basic bot")
 
 @bot.command()
-async def ping(ctx):
-    await ctx.send('pong')
-
-@bot.command()
-async def sum(ctx, x: int, y: int):
-    await ctx.send(x+y)
+async def ajuda(ctx):
+    embed = discord.Embed(
+        title="Comandos",
+        description="Todos os comandos começam com '>'",
+        color=discord.Color.magenta(),
+        )
+    embed.add_field(name=">youtube valor", value="Busca video no youtube")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/app-icons/600866134924984320/fe5bacc16fefd66e5c4690c2b12e2d16.png")
+    await ctx.send(embed=embed)
 
 @bot.command()
 async def info(ctx):
@@ -34,10 +37,13 @@ async def youtube(ctx, *, search):
     query_string = parse.urlencode({'search_query' : search})
     html_content = request.urlopen(f"http://www.youtube.com/results?{query_string}")
     re.findall("href=\\/watch\\?v=(.{11})")
-
      
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Streaming(name="Test", url="http://www.twitch.tv/account"))
+    activity = discord.Activity(
+        name=">ajuda",
+        type=discord.ActivityType.listening,
+        )
+    await bot.change_presence(activity=activity,)
 
 bot.run(os.environ['DISCORD_BOT_KEY'])
