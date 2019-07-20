@@ -86,9 +86,14 @@ async def limpar_error(ctx, error):
 async def entrar(ctx):
     logger.info(f"{ctx.author} | {ctx.message.content}")
     voice = ctx.message.author.voice
-    logger.info(voice)
     if voice is None:
         await ctx.send('Você não esta em um canal de voz.')
+    elif ctx.voice_client is not None:
+        if (str(voice.channel) == str(ctx.voice_client.channel)):
+            logger.info('here')
+            await ctx.send(f'Ja estou conectado ao canal {str(voice.channel)}')
+        else:
+            await ctx.voice_client.move_to(voice.channel)
     else:
         voiceClient = voice.channel.connect()
         await voiceClient
@@ -100,32 +105,15 @@ async def sair(ctx):
 @bot.command(pass_context=True)
 async def test(ctx):
     logger.info('start test')
-    methods = dir(ctx.voice_client)
+    methods = dir(ctx.voice_client.channel)
     # logger.info(ctx.bot)
-    # atts = vars(ctx.bot) 
     logger.info('methods')
     logger.info(methods)
-    logger.info(ctx.voice_client)
+    atts = vars(ctx.voice_client.channel) 
+    logger.info(ctx.voice_client.channel)
     
-    # logger.info('atributes')
-    # logger.info(atts)
-    # voice = get(bot.voice_clients, guild=ctx.guild)
-    # logger.info(f"{ctx.message.author.voice.channel.id}")
-    # logger.info(f"{ctx.author}")
-    # channel = ctx.message.author.voice.channel
-    # logger.info(channel)
-    # voice = get(bot.voice_clients, guild=ctx.guild)
-    # logger.info(voice)
-    # await channel.connect()
-    # await ctx.send(f"Joined {channel}")
-    # await ctx.send('ok')
-    # await bot.join_voice_channel(ctx.message.author.voice)
-    # discord.VoiceChannel.connect()
-    # channel = ctx.message.author.voice.channel
-    # voice = get(bot.voice_clients, guild=ctx.guild)
-    # voice = await channel.connect()
-
-    # await ctx.send(f"Joined {channel}")
+    logger.info('atributes')
+    logger.info(atts)
 
 
 bot.run(os.environ['DISCORD_BOT_KEY'])
