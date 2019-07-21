@@ -35,7 +35,7 @@ async def on_command_error(ctx, err):
 # COMANDOS
 @bot.command()
 async def ajuda(ctx):
-    logger.info(f"{ctx.author} | {ctx.message.content}")
+    logger.info(f"{ctx.guild.name} | {ctx.author} | {ctx.message.content}")
     embed = discord.Embed(
         title="Comandos",
         description="Todos os comandos começam com '>'",
@@ -44,12 +44,14 @@ async def ajuda(ctx):
     embed.add_field(name=">youtube pesquisa", value="Busca video no youtube //em construção")
     embed.add_field(name=">info", value="Exibe informações do servidor")
     embed.add_field(name=">limpar numero", value="Exclui quantidade de menssagens pelo numero passado")
+    embed.add_field(name=">entrar", value="Entra no canal de voz")
+    embed.add_field(name=">sair", value="Sai canal de voz")
     embed.set_thumbnail(url="https://cdn.discordapp.com/app-icons/600866134924984320/fe5bacc16fefd66e5c4690c2b12e2d16.png")
     await ctx.send(embed=embed)
 
 @bot.command()
 async def info(ctx):
-    logger.info(f"{ctx.author} | {ctx.message.content}")
+    logger.info(f"{ctx.guild.name} | {ctx.author} | {ctx.message.content}")
     embed = discord.Embed(
         title=f"{ctx.guild.name}",
         color=discord.Color.magenta()
@@ -62,7 +64,7 @@ async def info(ctx):
 
 @bot.command()
 async def youtube(ctx, *, search):
-    logger.info(f"{ctx.author} | {ctx.message.content}")
+    logger.info(f"{ctx.guild.name} | {ctx.author} | {ctx.message.content}")
     query_string = parse.urlencode({'search_query': search})
     html_content = request.urlopen('http://www.youtube.com/results?' + query_string)
     search_results = re.findall('href=\"\\/watch\\?v=(.{11})', html_content.read().decode())
@@ -70,27 +72,27 @@ async def youtube(ctx, *, search):
     await ctx.send('https://www.youtube.com/watch?v=' + search_results[0])
 
 
+
 @bot.command()
 async def limpar(ctx, amount : int):
-    logger.info(f"{ctx.author} | {ctx.message.content}")
+    logger.info(f"{ctx.guild.name} | {ctx.author} | {ctx.message.content}")
     await ctx.channel.purge(limit=amount)
 
 @limpar.error
 async def limpar_error(ctx, error):
-    logger.info(f"{ctx.author} | {ctx.message.content}")
+    logger.info(f"{ctx.guild.name} | {ctx.author} | {ctx.message.content}")
     if isinstance(err, commands.MissingRequiredArgument):
         await ctx.send('Informe a quantidade que deseja apagar.')
 
 
 @bot.command()
 async def entrar(ctx):
-    logger.info(f"{ctx.author} | {ctx.message.content}")
+    logger.info(f"{ctx.guild.name} | {ctx.author} | {ctx.message.content}")
     voice = ctx.message.author.voice
     if voice is None:
         await ctx.send('Você não esta em um canal de voz.')
     elif ctx.voice_client is not None:
         if (str(voice.channel) == str(ctx.voice_client.channel)):
-            logger.info('here')
             await ctx.send(f'Ja estou conectado ao canal {str(voice.channel)}')
         else:
             await ctx.voice_client.move_to(voice.channel)
